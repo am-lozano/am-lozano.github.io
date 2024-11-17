@@ -5,11 +5,14 @@ h1{
     font-family: Helvetica;
 }
 header{
-    border: 10px;
+    border: 1px solid black;
+    border-radius: 10px;
     background-color: #007bff
 }
 a:hover{
     color: white;
+}
+a{
     text-decoration: none;
 }
 #contenido{
@@ -17,19 +20,26 @@ a:hover{
     display: flex;
     flex-direction: column;
     align-items: center;
+    margin: 20px;
 }
 h2{
-    color: yellow;
+    color: red;
     font-family: 'Courier New', Courier, monospace;
     font-size: 35px;
 }
 img{
     margin: auto;
     display: inline-block;
+    box-shadow: -10px 10px 5px yellow;
 }
 footer{
     background-color: #333;
     color: white;
     padding: 20px;
     text-align: center;
+}
+p{
+    margin: 40px;
+    border: 2px dotted black ;
+    padding: 10px;
 }
