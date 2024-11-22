@@ -1,0 +1,17 @@
+body{
+    background-color: #c4f4fd;
+}
+.redondo{
+    border: 1px solid red;
+    border-radius: 5px;
+    max-width: 50%;
+}
+.transicion{
+    width: 200px;
+    height: 200px;
+    transition: all;
+}
+.transicion :hover{
+    width: 400px;
+    height: 400px;
+}
