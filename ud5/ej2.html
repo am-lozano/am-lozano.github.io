@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</head>
+<body>
+    <!-- tabla html -->
+    <table border="1px solid black">
+        <thead>
+            <tr>
+                <th> Nombre </th>
+                <th> Apellido </th>
+                <th> Edad </th>
+                <th> Ciudad </th>
+            </tr>
+        </thead>
+        <!-- formulario -->
+        <tbody id="tbody">
+            <tr>
+                <td> <input type="text" id="nombre"></td>
+                <td> <input type="text" id="apellido"></td>
+                <td> <input type="text" id="edad"></td>
+                <td> <input type="text" id="ciudad"></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <br>
+    <!-- boton para enviar los datos del formulario -->
+    <button type="button" id="boton"> Enviar </button>
+    <br>
+
+    <table id="js">
+        <thead>
+            <tr>
+                <th> Nombre </th>
+                <th> Apellido </th>
+                <th> Edad </th>
+                <th> Ciudad </th>
+            </tr>
+        </thead>
+    </table>
+
+    <script>
+
+        // ejecuta las funciones solo cuando se cargue el documento
+        $(document).ready(function(){
+            
+            function ejercicio() {
+                persona = obtenerValor();
+                $("#js").append(generarTr(persona));
+            }
+
+            // captura los valores introducidos en la tabla
+            function obtenerValor(){
+                const persona = {
+                    nombre: document.getElementById('nombre').value,
+                    apellido: document.getElementById("apellido").value,
+                    edad: document.getElementById("edad").value,
+                    ciudad: document.getElementById("ciudad").value,
+                };
+
+                    if (persona.nombre == "" || persona.apellido == "" || persona.edad == "" || persona.ciudad == "" ) {
+                        
+                    };
+
+                
+                return persona
+            }
+
+            // ejecuta la funcion ejercicio cuando se pulsa el boton
+            $("#boton").click(function(){
+                ejercicio();
+            });
+
+            // genera un <tr> nuevo en la tabla
+            function generarTr(persona) {
+                return `
+                <tr>
+                    <td>${persona.nombre}</td>
+                    <td>${persona.apellido}</td>
+                    <td>${persona.edad}</td>
+                    <td>${persona.ciudad}</td>
+                </tr>
+            `
+            }
+
+        });
+    </script>
+</body>
+</html>
