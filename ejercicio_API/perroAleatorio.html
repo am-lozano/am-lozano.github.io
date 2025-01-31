@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perros Aleatorios</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .container {
+            margin-top: 50px;
+        }
+        .imagen {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container text-center">
+        <h1>Perros Aleatorios</h1>
+        <div class="form-group">
+            <!-- desplegable para seleccionar una raza en especifico -->
+            <label for="breedSelector">Selecciona una raza:</label>
+            <select id="breedSelector" class="form-control"></select>
+        </div>
+        
+        <!-- boton para ensenar un imagen de perro aleatoria -->
+        <button id="randomButton" class="btn btn-primary">Aleatorio</button>
+        <div class="mt-4">
+
+            <!-- imagen del perro -->
+            <img id="dogImage" class="imagen" alt="Imagen de perro">
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const breedSelector = document.getElementById('breedSelector');
+            const randomButton = document.getElementById('randomButton');
+            const dogImage = document.getElementById('dogImage');
+
+            // Obtener la lista de razas
+            fetch('https://dog.ceo/api/breeds/list/all')
+                .then(response => response.json())
+                .then(data => {
+                    const breeds = data.message;
+                    for (const breed in breeds) {
+                        if (breeds[breed].length === 0) {
+                            const option = document.createElement('option');
+                            option.value = breed;
+                            option.textContent = breed;
+                            breedSelector.appendChild(option);
+                        } else {
+                            breeds[breed].forEach(subBreed => {
+                                const option = document.createElement('option');
+                                option.value = `${breed}/${subBreed}`;
+                                option.textContent = `${subBreed} ${breed}`;
+                                breedSelector.appendChild(option);
+                            });
+                        }
+                    }
+                });
+
+            // mostramos una imagen aleatoria cuando se pulsa el boton
+            randomButton.addEventListener('click', function() {
+                fetch('https://dog.ceo/api/breeds/image/random')
+                    .then(response => response.json())
+                    .then(data => {
+                        dogImage.src = data.message;
+                    });
+            });
+
+            // mostramos la imagen de la raza elegida
+            breedSelector.addEventListener('change', function() {
+                const selectedBreed = breedSelector.value;
+                fetch(`https://dog.ceo/api/breed/${selectedBreed}/images/random`)
+                    .then(response => response.json())
+                    .then(data => {
+                        dogImage.src = data.message;
+                    });
+            });
+        });
+    </script>
+</body>
+</html>

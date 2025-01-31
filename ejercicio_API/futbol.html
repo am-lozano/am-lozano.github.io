@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Equipo de futbol</title>
+    <!-- <link rel="icon" href="favicon.ico" type="image/x-icon"> -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+
+    <div class="container text-center">
+        <h1>Informacion sobre tu equipo de futbol preferido</h1>
+        <div class="form-group">
+
+            <!-- selector de el equipo -->
+            <label for="footballTeam">Selecciona un equipo:</label>
+            <select id="footballTeam" class="form-control"></select>
+        </div>
+
+        <!-- boton enviar el equipo elegido -->
+        <button id="teamButtom" class="btn btn-primary">Informacion</button>
+    </div>
+
+    <script>
+        /*
+        Crea una página que muestre la información obtenida al elegir un equipo de football
+        de la Premier League inglesa.
+        La ruta de acceso a los datos del Chelsea, por ejemplo, es: 
+        https://thesportsdb.com/api/v1/json/3/searchteams.php?t=Chelsea
+        Más información aquí: Free Sports API - TheSportsDB.com
+        */
+
+        // recepcion con AJAX
+        function solicitud() {
+            $.ajax({
+                url: "https://jsonplaceholder.typicode.com/users",
+                method: "GET",
+                dataType: "json", // Convierte la respuesta a objeto JSON 
+                success: function (data) { //200 o 201
+                    console.log(data);
+                },
+                error: function (xhr, status, error) {
+                    console.log(`Error: ${xhr.status} - ${error}`);
+                }
+            });
+        }
+
+        // envio con AJAX
+        function envio(objeto_js) {
+            $.ajax({
+                url: "https://jsonplaceholder.typicode.com/posts",
+                method: "POST",
+                data: JSON.stringify(objeto_js),
+                contentType: "application/json", // Especifica el tipo de contenido
+                dataType: "json", // La respuesta será interpretada como JSON
+                success: function (response) {
+                    console.log(response);
+                },
+                error: function (xhr, status, error) {
+                    console.log(`Error: ${xhr.status} - ${error}`);
+                }
+            });
+        }
+
+    </script>
+</body>
+
+</html>
