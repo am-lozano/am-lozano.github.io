@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Geolocalización por IP</title>
+
+    <!-- Importamos jQuery para facilitar el uso de AJAX -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <style>
+        /* Estilo general del cuerpo */
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        /* Estilo del input de texto */
+        input {
+            padding: 8px;
+            margin: 5px;
+            width: 250px;
+        }
+
+        /* Estilo del botón */
+        button {
+            padding: 10px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        /* Cambio de color cuando se pasa el ratón sobre el botón */
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Estilo del div donde mostraremos los resultados */
+        #resultado {
+            margin-top: 20px;
+            font-size: 18px;
+        }
+
+        /* Estilo del contenedor del mapa */
+        #mapa {
+            margin-top: 20px;
+            display: none;
+            /* Oculto hasta que se obtengan coordenadas */
+        }
+
+        /* Ajustamos el tamaño del mapa */
+        iframe {
+            width: 80%;
+            height: 400px;
+        }
+        
+    </style>
+</head>
+
+<body>
+
+    <h2>Geolocalización de una IP</h2>
+
+    <!-- Campo de entrada para que el usuario escriba una IP -->
+    <input type="text" id="ipInput" placeholder="Introduce una dirección IP">
+
+    <!-- Botón para buscar información de la IP -->
+    <button id="buscar">Buscar</button>
+
+    <!-- Aquí se mostrarán los resultados de la búsqueda -->
+    <div id="resultado"></div>
+
+    <!-- Contenedor del mapa -->
+    <div id="mapa">
+        <h3>Ubicación en el mapa</h3>
+        <iframe id="gmap_canvas" src="https://maps.google.com/maps?q=0,0&t=&z=13&ie=UTF8&iwloc=&output=embed">
+        </iframe>
+    </div>
+
+    <script>
+        // Evento al hacer clic en el botón de búsqueda
+        $("#buscar").on("click", function () {
+            // Capturamos el valor ingresado en el input
+            let ip = $("#ipInput").val();
+
+            // Si el campo está vacío, mostramos una alerta y salimos de la función
+            if (ip === "") {
+                alert("Por favor, introduce una dirección IP válida.");
+                return;
+            }
+
+            // Llamamos a la función que hace la solicitud AJAX pasando la IP ingresada
+            solicitudAJAX(ip);
+        });
+
+        // Función para hacer la petición AJAX a la API de geolocalización
+        function solicitudAJAX(ip) {
+            $.ajax({
+                // Construimos la URL de la API con la IP ingresada
+                url: `http://ip-api.com/json/${ip}?fields=status,country,regionName,city,lat,lon,isp,query`,
+                method: "GET", // Método HTTP GET para obtener datos
+                dataType: "json", // Indicamos que la respuesta será en formato JSON
+
+                // Si la solicitud es exitosa, ejecutamos esta función
+                success: function (data) {
+                    // Si la API devuelve un estado "fail", significa que la IP no es válida o no hay información
+                    if (data.status == "fail") {
+                        $("#resultado").html(`<p style="color: red;">No se pudo obtener información de la IP ingresada.</p>`);
+                        $("#mapa").hide(); // Ocultar el mapa si la IP es inválida
+                    } else {
+                        // Mostramos los datos obtenidos en el div "resultado"
+                        $("#resultado").html(`
+                            <p><strong>IP:</strong> ${data.query}</p>
+                            <p><strong>País:</strong> ${data.country}</p>
+                            <p><strong>Región:</strong> ${data.regionName}</p>
+                            <p><strong>Ciudad:</strong> ${data.city}</p>
+                            <p><strong>Latitud:</strong> ${data.lat}</p>
+                            <p><strong>Longitud:</strong> ${data.lon}</p>
+                            <p><strong>Proveedor de Internet (ISP):</strong> ${data.isp}</p>
+                        `);
+
+                        // Actualizamos la ubicación en el mapa y lo mostramos
+                        cambiarDireccion(data.lat, data.lon);
+                        $("#mapa").show();
+                    }
+                },
+
+                error: function () {
+                    $("#resultado").html(`<p style="color: red;">Error al conectar con la API.</p>`);
+                    $("#mapa").hide(); // Ocultar el mapa si hay error de conexión
+                }
+            });
+        }
+
+        // Función para actualizar la dirección del mapa con latitud y longitud
+        function cambiarDireccion(latitud, longitud) {
+            // Aquí estamos seleccionando el iframe con el id "gmap_canvas" y luego cambiamos su atributo 'src' 
+            // (la URL que contiene el mapa) usando la latitud y longitud proporcionadas
+            $("#gmap_canvas").attr("src", `https://maps.google.com/maps?q=${latitud},${longitud}&t=&z=13&ie=UTF8&iwloc=&output=embed`);
+        }
+    </script>
+
+</body>
+
+</html>

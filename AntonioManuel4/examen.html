@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Dados de la Suerte </title>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <style>
+        body{
+            background-color: antiquewhite;
+            padding: auto;
+        }
+        .centrar{
+            display: flex;
+            justify-content: center;
+            border: 2px solid red;
+        }
+        #titulo{
+            background-color: blue;
+            color: white;
+        }
+        #centrarTitulo{
+            display: flex;
+            justify-content: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="titulo">
+        <div id="centrarTitulo">
+            <h1>Dados aleatorios</h1> <br>
+        </div>
+    </div>
+    <hr color="antiquewhite">
+    <div class="centrar">
+        <!-- <h2>Antonio Manuel</h2> -->
+        <!-- formulario para enviar los datos del usuario -->
+        <form id="formulario">
+
+            <!-- campo oculto -->
+            <label for="idOculto" id="idOculto"></label>
+            <!-- campo para el nombre -->
+            <label for="nombre"> Nombre: </label>
+            <input type="text" name="nombre" id="nombreF"> <br> <br>
+
+            <!-- campo para los apellidos -->
+            <label for="apellido"> Apellidos: </label>
+            <input type="text" name="apellido" id="apellidoF"> <br> <br>
+
+            <!-- campo para la contrasena, debe ser TAPETE para iniciar el juego -->
+            <label for="contrasena"> Constrasena: </label>
+            <input type="text" name="contrasena" id="contrasenaF"> <br> <br>
+
+            <input type="checkbox" name="apuesta[]" value="2" id="apuesta2"><label for="apuesta2">2</label>
+            <input type="checkbox" name="apuesta[]" value="3" id="apuesta3"><label for="apuesta3">3</label>
+            <input type="checkbox" name="apuesta[]" value="4" id="apuesta4"><label for="apuesta4">4</label>
+            <input type="checkbox" name="apuesta[]" value="5" id="apuesta5"><label for="apuesta5">5</label>
+            <input type="checkbox" name="apuesta[]" value="6" id="apuesta6"><label for="apuesta6">6</label>
+            <input type="checkbox" name="apuesta[]" value="7" id="apuesta7"><label for="apuesta7">7</label>
+            <input type="checkbox" name="apuesta[]" value="8" id="apuesta8"><label for="apuesta8">8</label>
+            <input type="checkbox" name="apuesta[]" value="9" id="apuesta9"><label for="apuesta9">9</label>
+            <input type="checkbox" name="apuesta[]" value="10" id="apuesta10"><label for="apuesta10">10</label>
+            <input type="checkbox" name="apuesta[]" value="11" id="apuesta11"><label for="apuesta11">11</label>
+            <input type="checkbox" name="apuesta[]" value="12" id="apuesta12"><label for="apuesta12">12</label>
+
+            <br> <br>
+            <!-- boton para enviar los datos -->
+            <input type="submit" id="boton">
+        </form>
+    </div>
+
+
+    <script>
+        // cargamos el script cuando todo el html se carge
+        $(document).ready(function () {
+
+            let lista = [];
+
+            // controlamos que solo se apueste un numero
+            $('input:checkbox').on('change', function () {
+                let num = $('input:checkbox').filter(':checked').length;
+                if (num > 0) {
+                    $('input:checkbox').filter(':not(:checked)').prop('disabled', true);
+                } else {
+                    $('input:checkbox').prop('disabled', false);
+                }
+            });
+
+            // enviamos los datos cuando hacemos click en el boton
+            $('#boton').on("click", function () {
+
+                // evitar el envío del formulario sin pulsar el boton
+                event.preventDefault();
+
+                // objeto con los datos del formulario
+                let apuestaEnvio = {
+                    nombre: $("#nombreF").val(),
+                    apellidos: $("#apellidoF").val(),
+                    password: $("#contrasenaF").val(),
+                    apuesta: $("input[name='apuesta[]']:checked").map(function () { return $(this).val(); }).get()
+                }
+
+                comprobacion(apuestaEnvio);
+
+                // comprobamos que la contrasena es la correcta para empezar el juego y enviamos los datos
+                if ($("#contrasenaF").val() == "TAPETE") {
+
+                    // anadimos el objeto con los datos a un array con los objetos
+                    lista.push(apuestaEnvio);
+
+                    // serializamos y deserializamos
+                    simulacro();
+                    console.log(apuestaEnvio);
+
+                    // enviamos los datos del formulario
+                    envio(apuestaEnvio);
+
+                    // recibimos los datos
+                    solicitud();
+
+                } else {
+                    alert('No se envio');
+                }
+
+
+                // lista.push(apuestaEnvio);
+                // simulacro();
+            })
+
+            // funcion para serializar y deserializar
+            function simulacro() {
+                let lista_serializada = serializar(lista);
+                let lista_NOserializada = deserializar(lista_serializada)
+            }
+
+            // funcion para serializar
+            function serializar(objeto) {
+                return JSON.stringify(objeto);
+            }
+
+            // funcion para deserializar
+            function deserializar(objJson) {
+                return JSON.parse(objJson);
+            }
+
+            // console.log(lista);
+            function envio(objeto_js) {
+                $.ajax({
+                    url: "https://lm.iesnervion.es/dados.php",
+                    method: "POST",
+                    data: JSON.stringify(objeto_js),
+                    contentType: "application/json", // Especifica el tipo de contenido
+                    dataType: "json", // La respuesta será interpretada como JSON
+                    success: function (response) {
+                        console.log(response);
+                    },
+                    error: function (xhr, status, error) {
+                        console.log(`Error: ${xhr.status} - ${error}`);
+                    }
+                });
+            }
+
+            function solicitud() {
+                $.get("https://lm.iesnervion.es/dados.php")
+                    .done(function (data) {
+                        console.log(data);
+                    })
+                    .fail(function (xhr, status, error) {
+                        console.log(`Error: ${xhr.status} - ${error}`);
+                    });
+            }
+        })
+
+        // funcion para comprobar que todos los campos estan rellenos
+        function comprobacion (obj){
+            // comprobamos que todos los campos son rellenados
+            if ($("#nombreF").val() == null || $("#nombreF").val() == "") {
+                    alert("El campo Nombre está vacío");
+                }
+                if ($("#apellidoF").val() == null || $("#apellidoF").val() == "") {
+                    alert("El campo Apellido está vacío");
+                }
+                if ($("#contrasenaF").val() == null || $("#contrasenaF").val() == "") {
+                    alert("El campo Contrasena está vacío");
+                }
+        }
+    </script>
+</body>
+
+</html>

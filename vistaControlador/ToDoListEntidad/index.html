@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tareas</title>
+</head>
+<body>
+    <h1>Tareas</h1>
+    <div id="app">
+        <form id="task-form">
+            <input type="text" id="task-input" placeholder="Agregar nueva tarea">
+            <input type="text" id="desc-input" placeholder="Agregar descripcion">
+            <button type="submit">Agregar</button>
+        </form>
+        <table id="task-table">
+            <thead>
+                <tr>
+                    <th>Tarea</th>
+                    <th>Descripcion</th>
+                    <th>Fecha</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="task-list"></tbody>
+        </table>
+    </div>
+
+    <script src="model.js"></script>
+    <script src="view.js"></script>
+    <script src="controller.js"></script>
+</body>
+</html>

@@ -1,0 +1,54 @@
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Ejercicio 1</title>
+    </head>
+    <body>
+        <h1>Ejemplo 1: Consulta de Usuarios</h1>
+        <button id="boton">Pulsa y observa la consola</button>
+
+        <table border="1">
+            <tr>
+                <th>Nombre</th>
+                <th>Apellidos</th>
+                <th>Edad</th>
+                <th>Ciudad</th>
+            </tr>
+            <tr>
+                <td id="nombre">Alberto</td>
+                <td id="apellidos">Ramos</td>
+                <td id="edad">26</td>
+                <td id="ciudad">Granada</td>
+            </tr>
+        </table>
+    </body>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $("#boton").click(function() {
+
+            let usuario = {
+                nombre: $("#nombre").text(),
+                apellidos: $("#apellidos").text(),
+                edad: $("#edad").text(),
+                ciudad: $("#ciudad").text()
+            };
+
+            let usuarioSerializado = serializar(usuario);
+
+            console.log(usuarioSerializado);
+
+            let usuarioDeserializado = deserializar(usuarioSerializado);
+
+            console.log(usuarioDeserializado);
+
+        })
+
+        function serializar(obj_js) {
+            return JSON.stringify(obj_js);
+        }
+
+        function deserializar(obj_JSON) {
+            return JSON.parse(obj_JSON);
+        }
+    </script>
+</html>

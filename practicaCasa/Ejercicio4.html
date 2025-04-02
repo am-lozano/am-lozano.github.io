@@ -1,0 +1,185 @@
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>DATA INSERT</title>
+    </head>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            display: flex;
+            gap: 20px;  /* Espaciado entre el formulario y la tabla */
+            padding: 50px;
+            background-color: rgb(241, 246, 248);
+        }
+
+        /* Estilo para el contenedor del formulario */
+        #form {
+            text-align: center;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            width: min-content;
+            height: min-content;
+            box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.3); /* Agregar sombra */
+            background-color: white;
+        }
+
+        /* Estilo para la tabla */
+        #tabla {
+            width: 100%;  /* Ocupa todo el ancho disponible */
+            border-collapse: collapse;
+            height: min-content;
+            box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.3); /* Agregar sombra */
+            background-color: white;
+        }
+
+        td, th {
+            padding: 10px;
+            text-align: center;
+            border: 1px solid #ccc;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input {
+            margin-bottom: 15px;
+        }
+        #post {
+            background-color: skyblue;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            font-size: 15px;
+            padding: 10px;
+            width: 120px;
+            margin-top: 20px;
+            font-weight: bolder;
+        }
+    </style>
+    <body>
+        <div id="form">
+            <label for="id">ID</label>
+            <input type="text" id="id"/>
+
+            <label for="descripcion">Descripcion</label>
+            <input type="text" id="descripcion"/>
+
+            <label for="idProveedor">ID Proveedor</label>
+            <input type="text" id="idProveedor"/>
+
+            <label for="precio">Precio</label>
+            <input type="text" id="precio"/><br>
+
+            <button id="post">Enviar</button>
+        </div>
+
+        <table id="tabla" border="1">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Descripcion</th>
+                    <th>ID Proveedor</th>
+                    <th>Precio</th>
+                </tr>
+            </thead>
+            <tbody id="datosEnviados">
+
+            </tbody>
+        </table>
+    </body>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        
+        $("#post").click( function() {
+            
+            // Creamos el objeto con los valores que ha insertado el usuario
+            let articulo = {
+                id: $("#id").val(),
+                descripcion: $("#descripcion").val(),
+                idProveedor: $("#idProveedor").val(),
+                precio: $("#precio").val(),
+            };
+
+            // Enviamos la informacion a la BD
+            $.post("https://lm.iesnervion.es/reto4.php",
+                JSON.stringify(articulo),
+                function(response) {
+
+                    // Imprimimos por consola la respuesta del servidor
+                    console.log(response);
+
+                    // Si ocurre algun error lo mostramos
+                    if (response.error != "") {
+                        alert(response.error);
+            
+                    // Si el envio se realiza correctamente
+                    } else {
+                
+                        // Obtenemos el objeto que acabamos de enviar
+                        let articuloEnviado = response.lista[response.lista.length - 1];
+
+                        // Obtenemos el id del articulo enviado
+                        let idArticuloEnviado = articuloEnviado.id;
+
+                        // Añadimos los valores a la tabla
+                        añadirValoresTabla(articuloEnviado, idArticuloEnviado);
+                    }
+                },
+                "json"
+            )
+            .fail(function(xhr, status, error) {
+                console.log(`Error: ${xhr.status} - ${error}`);
+            });
+        });
+
+        // Añade una nueva fila a la tabla con los valores que hemos enviado
+        function añadirValoresTabla(articuloEnviado, id) {
+            
+            // Creamos la nueva fila con los valores enviados
+            let filaNueva = "<tr id='" + id + "'>" + 
+                "<td>" + articuloEnviado.id + "</td>" + 
+                "<td>" + articuloEnviado.descripcion + "</td>" + 
+                "<td>" + articuloEnviado.idProveedor + "</td>" + 
+                "<td>" + articuloEnviado.precio + "</td>" + 
+                "</tr>";
+            
+            // Añadimos la fila a la tabla
+            $("#datosEnviados").append(filaNueva);
+        }
+
+        // Elimina la fila de la tabla y el objeto del servidor
+        $("#datosEnviados").on("click", "tr", function() {
+
+            // Eliminamos la fila de la tabla
+            $(this).remove();
+
+            // Obtenemos el id de la fila que se ha pulsado
+            let idFila = $(this).attr('id');
+
+            // Ejecutamos la funcion de envio
+            envio(idFila);
+        });
+
+        // Función para enviar al servidor la solicitud de eliminacion del objeto indicado
+        function envio(idFila) {
+                const xhr = new XMLHttpRequest();
+                xhr.open("DELETE", "https://lm.iesnervion.es/reto4.php?id=" + idFila, true);
+                xhr.responseType = "json";
+
+                // Preparamos a continuación la respuesta
+                xhr.onload = function() {
+                if (xhr.status == 200) { 
+                    console.log(xhr.response);
+
+                } else {
+                    console.log("Error: ${xhr.status}");
+                }
+                };
+                xhr.send();
+            }
+
+    </script>
+</html>

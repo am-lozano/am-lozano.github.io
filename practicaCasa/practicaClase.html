@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src=""></script>
+</head>
+
+<body>
+
+    <!-- boton para generar una nueva palabra aleatoria -->
+    <div>
+        <input type="submit" id="boton" value="Nueva palabra">
+    </div>
+
+    <!-- hueco para mostrar la palabra generada -->
+    <div id="palabra"></div>
+
+    <script>
+        $(document).ready(function () {
+            $('#boton').on("click", function() {
+
+                // La página no debe recargarse en cada inserción 
+                event.preventDefault(); // evitar el envío del formulario
+
+                
+                // pedimos la palabra aleatoria de la API
+                solicitud();
+            })
+
+            function solicitud(){
+                $.ajax({
+                    url: "https://random-word-api.herokuapp.com/word",
+                    method: "GET",
+                    dataType: "json", // Convierte la respuesta a objeto JSON 
+                    success: function (data) { //200 o 201
+                        console.log(data);
+                    },
+                    error: function (xhr, status, error) {
+                        console.log(`Error: ${xhr.status} - ${error}`);
+                    }
+                });
+            }
+
+        })
+    </script>
+</body>
+
+</html>

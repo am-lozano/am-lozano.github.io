@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="model.js"></script>
+    <script src="view.js"></script>
+    <script src="controller.js"></script>
 </head>
 <body>
     <!-- tabla html -->
@@ -42,57 +45,14 @@
                 <th> Ciudad </th>
             </tr>
         </thead>
+        <tbody></tbody>
     </table>
 
     <script>
-
-        // ejecuta las funciones solo cuando se cargue el documento
-        $(document).ready(function(){
-            
-            function ejercicio() {
-                persona = obtenerValor();
-                $("#js").append(generarTr(persona));
-            }
-
-            // captura los valores introducidos en la tabla
-            function obtenerValor(){
-                const persona = {
-                    nombre: document.getElementById('nombre').value,
-                    apellido: document.getElementById("apellido").value,
-                    edad: document.getElementById("edad").value,
-                    ciudad: document.getElementById("ciudad").value,
-                };
-
-                    if (!persona.nombre){
-                        alert("El campo Nombre esta vacio")
-                    } else if (!persona.apellido){
-                        alert("El campo Apellido esta vacio")
-                    } else if (!persona.edad){
-                        alert("El campo Edad esta vacio")
-                    } else if (!persona.ciudad){
-                        alert("El campo Ciudad esta vacio")
-                    }
-                
-                return persona
-            }
-
-            // ejecuta la funcion ejercicio cuando se pulsa el boton
-            $("#boton").click(function(){
-                ejercicio();
-            });
-
-            // genera un <tr> nuevo en la tabla
-            function generarTr(persona) {
-                return `
-                <tr>
-                    <td>${persona.nombre}</td>
-                    <td>${persona.apellido}</td>
-                    <td>${persona.edad}</td>
-                    <td>${persona.ciudad}</td>
-                </tr>
-            `
-            }
-
+        $(document).ready(function() {
+            const model = new PersonaModel();
+            const view = new PersonaView();
+            const controller = new PersonaController(model, view);
         });
     </script>
 </body>

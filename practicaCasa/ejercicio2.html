@@ -1,0 +1,82 @@
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Ejercicio1 Reto</title>
+    </head>
+    <body>
+        <h1>Ejemplo 2: Datos dinámicos</h1>
+
+        <label for="nombre">Nombre</label>
+        <input type="text" id="nombre"/>
+
+        <label for="apellidos">Apellidos</label>
+        <input type="text" id="apellidos"/>
+
+        <label for="edad">Edad</label>
+        <input type="number" id="edad"/>
+
+        <label for="ciudad">Ciudad</label>
+        <input type="text" id="ciudad"/>
+
+        <button id="boton">Insertar datos</button>
+
+        <table border="1">
+            <thead>
+                <th>Nombre</th>
+                <th>Apellidos</th>
+                <th>Edad</th>
+                <th>Ciudad</th>
+            </thead>
+            <tbody>
+
+            </tbody>
+        </table>
+    </body>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+
+        $("#boton").click(function() {
+
+            // Creamos el objeto 
+            let usuario = {
+                nombre: $("#nombre").val(),
+                apellidos: $("#apellidos").val(),
+                edad: $("#edad").val(),
+                ciudad: $("#ciudad").val(),
+            };
+
+            // Serializamos el objeto y lo mostramos por consola
+            let usuarioSerializado = serializar(usuario);
+            console.log(usuarioSerializado);
+
+            // Deserializamos el objeto y lo mostramos por consola
+            let usuarioDeserializado = deserializar(usuarioSerializado);
+            console.log(usuarioDeserializado);
+
+            // Añadimos los valores a la tabla
+            generarFila(usuarioDeserializado);
+        });
+
+        function serializar(obj_JS) {
+            return JSON.stringify(obj_JS);
+        }
+
+        function deserializar(obj_JSON) {
+            return JSON.parse(obj_JSON);
+        }
+
+        function generarFila(obj_JS) {
+
+            let fila = "<tr>" + 
+            "<td>" + obj_JS.nombre + "</td>" +
+            "<td>" + obj_JS.apellidos + "</td>" +
+            "<td>" + obj_JS.edad + "</td>" +
+            "<td>" + obj_JS.ciudad + "</td>";
+
+            $("tbody").append(fila);
+        }
+
+
+        
+    </script>
+</html>

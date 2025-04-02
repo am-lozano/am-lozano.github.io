@@ -1,18 +1,35 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="icon" href="img/bitcoin.ico" type="image/x-icon">
-	<title> Mi pagina web </title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Tareas</title>
+    <style>
+        .tarea {
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            display: flex;
+            justify-content: space-between;
+        }
+        button {
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
-	<ol type="I">
-		<li> <a href="web/pagina1.html"> Pagina 1 </a></li>
-		<li> <a href="web/pagina2.html"> Pagina 2 </a></li>
-		<li> <a href="web/pagina3.html"> Pagina 3 </a></li>
-		<li> <a href="web/pagina4.html"> Pagina 4 </a></li>
-		<li> <a href="web/pagina5.html"> Pagina 5 </a></li>
-	</ol>
+    <h1>Lista de Tareas</h1>
+    
+    <!-- Formulario para añadir tareas -->
+    <input type="text" id="descripcion" placeholder="Nombre de la tarea" />
+    <textarea id="detalle" placeholder="Descripción de la tarea"></textarea>
+    <button id="btnAgregar">Añadir Tarea</button>
+
+    <div id="listaTareas">
+        <!-- Aquí se mostrarán las tareas -->
+    </div>
+
+    <script src="app.js"></script>
 </body>
 </html>

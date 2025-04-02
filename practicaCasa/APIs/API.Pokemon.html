@@ -1,0 +1,137 @@
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>API.Pokemon</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                background-color: #f4f4f4;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100vh;
+                margin: 0;
+            }
+            .container {
+                background: white;
+                padding: 40px;
+                border-radius: 10px;
+                box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+                text-align: center;
+                width: 50%;
+                max-width: 600px;
+            }
+            #titulo {
+                font-size: 28px;
+                font-weight: bold;
+                margin-bottom: 20px;
+            }
+            .controls {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 15px;
+            }
+            select {
+                padding: 10px;
+                font-size: 18px;
+                border-radius: 5px;
+                border: 1px solid #ccc;
+                width: 100%;
+            }
+            button {
+                background-color: #EF4036;
+                border: none;
+                padding: 12px 24px;
+                font-size: 18px;
+                font-weight: bolder;
+                color: white;
+                border-radius: 5px;
+                cursor: pointer;
+                transition: background 0.3s;
+            }
+            .image-container {
+                margin-top: 20px;
+            }
+            #imagenPokemon {
+                width: 200px;
+                height: 200px;
+                border-radius: 10px;
+                border: 2px solid #ddd;
+            }
+            #pokeball {
+                width: 25px;
+                height: 25px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="imgPokeBall">
+                <img id="pokeball" src="https://th.bing.com/th/id/R.2b4673e318ab94da17bbf9eaad5b80d6?rik=r37nmE720g%2bQsA&pid=ImgRaw&r=0"/>
+            </div>
+            <p id="titulo">API.Pokemon</p>
+            <div class="controls">
+                <select id="pokemons"></select>
+                <button id="get">GET</button>
+            </div>
+            <div class="image-container">
+                <img src="" id="imagenPokemon"/>
+            </div>
+        </div>
+    </body>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+
+        // JQUERY -> Recepcion de datos
+        $(document).ready( function () {
+            $.get("https://pokeapi.co/api/v2/pokemon")
+            .done(function(data) {
+                console.log(data);
+
+                // Obtenemos el array que contiene los pokemons en objetos
+                let array = data.results;
+
+                // Recorremos el array y obtenemos el nombre del pokemon de cada objeto
+                for (let i in array) {
+
+                    // Creamos la variable pokemon para almacenar cada objeto del array
+                    let pokemon = array[i];
+
+                    // Obtenemos el nombre de cada pokemon
+                    let nombrePokemon = pokemon.name;
+
+                    // Añadimos el nombre del pokemon al select
+                    $("#pokemons").append("<option value='" + nombrePokemon + "'>" + nombrePokemon + "</option");
+                }
+            })
+            .fail(function(xhr, status, error) {
+                console.log(`Error: ${xhr.status} - ${error}`);
+            });
+        })
+
+
+        // JQUERY -> Recepcion de imagen del pokemon seleccionado
+        $("#get").click( function() {
+
+            // Obtenemos el pokemon que ha seleccionado el usuario
+            let pokemonSeleccionado = $("#pokemons").val();
+
+            $.get("https://pokeapi.co/api/v2/pokemon/" + pokemonSeleccionado)
+            .done(function(data) {
+                console.log(data);
+
+                 // Obtenemos la imagen del pokemon seleccionado
+                let urlImagen = data.sprites.front_default;
+
+                // Añadimos la url a la imagen
+                $("#imagenPokemon").attr("src",urlImagen);
+                
+            })
+            .fail(function(xhr, status, error) {
+                console.log(`Error: ${xhr.status} - ${error}`);
+            });
+        })
+
+    </script>
+</html>

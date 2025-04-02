@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        // for in -> devuelve los indices
+// for of -> devuelve el objeto
+
+// array que contiene objetos en cada indice
+let array = [{
+    id: 1,
+    nombre: 'Nicolas'
+}, {
+    id: 2,
+    nombre: 'Felipe'
+}, {
+    id: 3,
+    nombre: 'Chancito'
+}];
+
+// array para almacenar los arrays pares
+let pares = toPairs(array); // el array de cada indice contendra un id (i = 0) y un objeto (i = 1)
+
+// mostramos el array de pares
+console.log(pares)
+
+function toPairs (arr){
+
+    // array vacio
+    let paresVacio = [];
+
+    // recorremos el array con un bucle for in
+    for (indice in arr){
+
+        // variable para almacenar el objeto
+        let obj = arr[indice];
+
+        console.log(obj.id)
+        console.log(obj)
+
+        // anadimos el indice accediendo directamente al id del objeto (obj.id) y el objeto completo (obj)
+        paresVacio[indice] = [obj.id, obj]; 
+        // hay que poner [] para que se anadan correctamente las cosas, si no se pone solo anade el id
+    }
+
+    // devolvemos el array de pares
+    return paresVacio;
+
+
+    /* MAL
+    // array al que vamos anadiendo un id y el objeto
+    let arrayPares = [];
+
+    // variable para el id del array
+    let i = 1;
+
+    // recorremos el array de objetos
+    for (let valor of arr){
+        // anadimos un id al array de pares
+        arrayPares.push(i++);
+
+        // anadimos el objeto al array de pares
+        arrayPares.push(valor);
+        
+        // devolvemos cada conjunto de id con objeto
+        return arrayPares;
+    }
+    */
+
+};
+    </script>
+
+    <script>
+        // mostrar un array de longitud n que contenga los numeros desde el 1 hata N
+$("#boton").click(function(event){
+    
+    event.preventDefault(); // evitamos que el formulario se envie automaticamente
+
+    // obtenemos el valor de la longitud maxima del formulario
+    let longitud = parseFloat($("#longitudMax").val());
+
+    // array con los numeros de 1 hasta n
+    let resultado = crearArray(longitud);
+
+    // mostramos el array
+    console.log(resultado);
+})
+
+// funcion para devolver el array con los numeros de 1 hasta n
+function crearArray (n){
+
+    // comprobamos que el numero es mayor a 0
+    if (n <= 0){
+        
+        // devolvemos un array vacio
+        return [];
+    }
+
+    // array vacio al que anadir cada numero
+    let arr = [];
+
+    for (let i = 1; i <= n; i++){
+        arr.push(i);
+
+        // otra opcion
+        // arr[i] = i + 1; // -> el for tendria que ser i = 0; i < n
+    }
+
+    /*
+    let i = 1;
+
+    while (i <= n) {
+        arr.push(i);
+        i++;
+    }
+    */
+    return arr;
+}
+    </script>
+
+
+<script>
+    // array con pares, contiene arrays que contienen un id en el indice 0 y un objeto en el indice 1
+let pares2 = [[1, {nombre: 'Nicolas'}], [2, {nombre: 'Felipe'}], [3, {nombre: 'Chanchito'}]];
+
+// array resultado
+let resultado = toCollection(pares2);
+
+// mostramos el resultado
+console.log(resultado);
+
+// funcion para extraer el id y anadirlo al objeto
+function toCollection (arr){ // resultado -> =[{id: 1, nombre: 'Nicolas'},{},{}]
+
+    // array para anadir los id a los objetos
+    let array = [];
+
+    // recorremos el array y extraemos el indice 0 que sera el id que anadiremos al objeto
+    for (valor in arr){
+
+        // variable para almacenar el elemento
+        let elemento = arr[valor];
+
+        // anadimos el elemento al array
+        array[valor] = elemento[1]; // no tiene id
+
+        // anadimos el id
+        array[valor].id = elemento[0];
+
+        // no funciona del todo bien
+        // // variable para almacenar el elemento
+        // let elemento = arr[valor];
+
+        // // anadimos el elemento al array
+        // let nuevoObjeto = { id: elemento[0], nombre: elemento[1]};
+
+        // // anadimos el nuevo objeto al array
+        // array[valor] = nuevoObjeto;
+    }
+
+    return array;
+}
+</script>
+
+<script>
+    // devuelve la cantidad de numeros positivos de un array
+
+// nos creamos el array con x numeros
+let conjuntoNumeros = [1,2,3,4,-5,-3,-1];
+
+// funcion para saber cuantos numeros positivos contiene el array
+function positivos (arr) {
+
+    // variable para contar cuantos numeros positivos hay en el array
+    let cont = 0;
+
+    // recorremos el array con un bucle for of (como for each)
+    for (let numero of arr){
+        
+        if (numero >= 0){
+            cont++;
+        }
+    }
+
+    // devolvemos la cantidad de numeros positivos contenidos en el array
+    return cont;
+}
+
+// usamos la funcion con el array
+console.log("Su array contiene " + positivos(conjuntoNumeros) + " numeros positivos")
+</script>
+
+
+<script>
+    // funcion para calcular el precio de un producto aplicando impuestos, se le pasa a la funcion el precio original y la cantidad de impuestos
+
+// obtenemos los valores del formulario despues de enviar los datos
+$("#formulario").submit(function(event){
+
+event.preventDefault(); // Evitar que el formulario se envíe automáticamente
+
+let precioFinal = impuestos (parseFloat($("#precioSin").val()), parseFloat($("#impuestosPrecio").val())) // implementamos jquery para pedir los datos
+
+console.log("El producto cuenta en total: " + precioFinal)
+})
+
+// variable para almacenar el precio del producto con impuestos anadidos
+
+function impuestos (precio, anadido) {
+// variable para calcular el anadido de impuestos al producto
+let impuestoAnadido = precio * (anadido / 100);
+return precio + impuestoAnadido;
+}
+
+</script>
+</body>
+</html>

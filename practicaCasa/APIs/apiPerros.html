@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <!-- Meta información para la codificación de caracteres y la escala en dispositivos móviles -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perros Aleatorios</title>
+
+    <!-- Importar el archivo CSS de Bootstrap desde un CDN para el diseño -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Importar jQuery desde un CDN para facilitar el manejo de AJAX -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+
+<body class="text-center p-5">
+    <div class="container">
+        <!-- Título principal -->
+        <h1 class="mb-4">Generador de Imágenes de Perros</h1>
+
+        <!-- Botón que genera una imagen aleatoria de perro -->
+        <button id="btnAleatorio" class="btn btn-primary mb-3">Imagen Aleatoria</button>
+
+        <!-- Selector de raza para elegir una raza de perro -->
+        <select id="selectorRaza" class="form-select mb-3">
+            <option value="">Selecciona una raza</option>
+        </select>
+
+        <!-- Contenedor de la imagen que se va a mostrar -->
+        <div>
+            <!-- Imagen que será cargada dinámicamente mediante jQuery -->
+            <img id="imagenPerro" src="" alt="Imagen de perro" class="img-fluid"
+                style="max-width: 500px; display: none;">
+        </div>
+    </div>
+
+    <script>
+        // Función para cargar todas las razas disponibles
+        function cargarRazas() {
+            $.ajax({
+                url: "https://dog.ceo/api/breeds/list/all",  // API para obtener las razas de perros
+                method: "GET",  // Método HTTP para obtener los datos
+                success: function (data) {  // Función que se ejecuta si la solicitud es exitosa
+                    let razas = data.message;  // Obtener el objeto de razas del JSON recibido
+                    // Iterar sobre las razas
+                    for (let raza in razas) {
+                        // Si la raza no tiene subrazas, agregarla directamente al selector
+                        if (razas[raza].length === 0) {
+                            $("#selectorRaza").append(`<option value="${raza}">${raza}</option>`);
+                        } else {
+                            // Si la raza tiene subrazas, agregarlas al selector con el nombre completo
+                            razas[raza].forEach(subraza => {
+                                $("#selectorRaza").append(`<option value="${raza}/${subraza}">${subraza} (${raza})</option>`);
+                            });
+                        }
+                    }
+                },
+                error: function () {  // Si ocurre un error en la solicitud
+                    alert("Error al cargar las razas.");
+                }
+            });
+        }
+
+        // Función para obtener una imagen aleatoria de perro
+        function obtenerImagenAleatoria() {
+            $.ajax({
+                url: "https://dog.ceo/api/breeds/image/random",  // API para obtener una imagen aleatoria
+                method: "GET",  // Método HTTP para obtener los datos
+                success: function (data) {  // Función que se ejecuta si la solicitud es exitosa
+                    // Mostrar la imagen obtenida en el contenedor
+                    $("#imagenPerro").attr("src", data.message).show();
+                },
+                error: function () {  // Si ocurre un error en la solicitud
+                    alert("Error al cargar la imagen aleatoria.");
+                }
+            });
+        }
+
+        // Función para obtener una imagen de una raza específica seleccionada
+        function obtenerImagenPorRaza(raza) {
+            $.ajax({
+                url: `https://dog.ceo/api/breed/${raza}/images/random`,  // API para obtener una imagen aleatoria de una raza
+                method: "GET",  // Método HTTP para obtener los datos
+                success: function (data) {  // Función que se ejecuta si la solicitud es exitosa
+                    // Mostrar la imagen obtenida en el contenedor
+                    $("#imagenPerro").attr("src", data.message).show();
+                },
+                error: function () {  // Si ocurre un error en la solicitud
+                    alert("Error al cargar la imagen de la raza.");
+                }
+            });
+        }
+
+        // Cargar la lista de razas al cargar la página
+        cargarRazas();
+
+        // Evento para el botón de imagen aleatoria
+        $("#btnAleatorio").click(function () {
+            obtenerImagenAleatoria();  // Obtener una imagen aleatoria cuando se hace clic
+        });
+
+        // Evento para el selector de razas
+        $("#selectorRaza").change(function () {
+            let razaSeleccionada = $(this).val();  // Obtener la raza seleccionada
+            if (razaSeleccionada) {
+                obtenerImagenPorRaza(razaSeleccionada);  // Obtener una imagen de esa raza
+            }
+        });
+    </script>
+</body>
+
+</html>

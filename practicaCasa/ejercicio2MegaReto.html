@@ -1,0 +1,225 @@
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Ejercicio1 Reto</title>
+    </head>
+    <body>
+        <h1>Ejemplo 2: Datos dinámicos</h1>
+
+        <label for="nombre">Nombre</label>
+        <input type="text" id="nombre"/>
+
+        <label for="apellidos">Apellidos</label>
+        <input type="text" id="apellidos"/>
+
+        <label for="edad">Edad</label>
+        <input type="number" id="edad"/>
+
+        <label for="ciudad">Ciudad</label>
+        <input type="text" id="ciudad"/>
+
+        <button id="boton">Insertar datos</button>
+
+        <table border="1" id="tablaDatos">
+            <thead>
+                <th>Nombre</th>
+                <th>Apellidos</th>
+                <th>Edad</th>
+                <th>Ciudad</th>
+            </thead>
+            <tbody id="datos">
+
+            </tbody>
+        </table>
+
+        <div id="edades"></div>
+    </body>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+
+        // Creamos el array para almacenar los datos
+        let datos = [];
+
+        // Funcion para actualizar la tabla
+        function actualizaTabla() {
+
+            // Limpiamos el contenido del tbody de la tabla
+            $("#datos").empty();
+
+            // Recorremos el array y generamos las filas
+            for (i in datos) {
+                
+                // Obtenemos el objeto
+                let obj = datos[i];
+
+                // Generamos la fila
+                generarFila(obj, i);
+            }
+        }
+
+        $("#boton").click(function() {
+
+            // Creamos el booleano sonValidos para almacenar el resultado de la funcion compruebaCampos
+            let sonValidos;
+
+            // Comprobamos que no haya ningún campo vacío
+            sonValidos = compruebaCampos();
+
+            // Si todos los campos están rellenos
+            if (sonValidos) {
+
+                // Creamos el objeto 
+                let usuario = {
+                    nombre: $("#nombre").val(),
+                    apellidos: $("#apellidos").val(),
+                    edad: $("#edad").val(),
+                    ciudad: $("#ciudad").val(),
+                };
+
+                // Serializamos el objeto y lo mostramos por consola
+                let usuarioSerializado = serializar(usuario);
+                //console.log(usuarioSerializado);
+
+                // Deserializamos el objeto y lo mostramos por consola
+                let usuarioDeserializado = deserializar(usuarioSerializado);
+                //console.log(usuarioDeserializado);
+
+                // Añadimos los valores al array
+                datos.push(usuarioDeserializado);
+
+                // Imprimimos los datos
+                console.log(datos);
+
+                // Actualizamos la tabla
+                actualizaTabla();
+
+                // Calculamos los datos
+                calculaDatos();
+            }
+        });
+
+
+        // Funcion para eliminar el objeto del array y actualizar la tabla
+        $("#datos").on("click", "tr", function() {
+
+            // Obtenemos la posición del objeto que se ha clickado
+            let pos = $(this).attr('id');
+
+            // Eliminamos del array el objeto que se ha clickado
+            datos.splice(pos, 1);
+
+            // Mostramos por consola el contenido del array tras eliminar
+            console.log(datos);
+
+            // Volvemos a actualizar la tabla después de eliminar la fila
+            actualizaTabla();
+
+            // Calculamos los datos
+            calculaDatos();
+        });
+        
+
+        // Funcion para generar fila
+        function generarFila(obj_JS, id) {
+
+            // Usamos comillas escapadas para el id dentro del onclick
+            let fila = "<tr id='" + id + "'>" +
+            "<td>" + obj_JS.nombre + "</td>" +
+            "<td>" + obj_JS.apellidos + "</td>" +
+            "<td>" + obj_JS.edad + "</td>" +
+            "<td>" + obj_JS.ciudad + "</td>" + 
+            "</tr>";
+
+            $("tbody").append(fila);
+        }
+
+
+        // Funcion para calcular los datos
+        function calculaDatos() {
+
+            // Si existen objetos en el array
+            if (datos.length > 0) {
+
+                // Creamos las variables de los datos que vamos a mostrar
+                let suma = 0;
+                let media;
+                let max = 0;
+                let min = datos[0].edad;
+                
+                // Recorremos el array que contiene los datos
+                for (let i in datos) {
+
+                    // Obtenemos el objeto
+                    let obj = datos[i];
+                    
+                    // Obtenemos la edad del objeto y le hacemos un casteo a number
+                    let edad = Number(obj.edad);
+
+                    // Si la edad es mayor que la maxima actualizamos
+                    if (edad > max) {
+                        max = edad;
+                    }
+
+                    // Si la edad es menor que la minima actualizamos
+                    if (edad < min) {
+                        min = edad;
+                    }
+
+                    // Sumamos su edad a suma
+                    suma += edad;
+                }
+
+                // Dividimos la suma de las edades entre el numero de objetos para calcular la media
+                media = suma / datos.length;
+
+                // Vaciamos el div
+                $("#edades").empty();
+
+                // Creamos el contenido a añadir
+                let contenido = "<p>Suma de las edades: " + suma + "</p>" +
+                                "<p>Media de las edades: " + media + "</p>" +
+                                "<p>Edad mínima: " + min + "</p>" +
+                                "<p>Edad máxima: " + max + "</p>";
+
+                // Añadimos los nuevos datos recalculados
+                $("#edades").append(contenido);
+            }
+        }
+
+
+        function serializar(obj_JS) {
+            return JSON.stringify(obj_JS);
+        }
+
+
+        function deserializar(obj_JSON) {
+            return JSON.parse(obj_JSON);
+        }
+
+
+        function compruebaCampos() {
+
+            let sonValidos = true;
+
+            if ($("#nombre").val() == null || $("#nombre").val() == "") {
+                alert("El campo nombre está vacío");
+                sonValidos = false;
+            }
+            if ($("#apellidos").val() == null || $("#apellidos").val() == "") {
+                alert("El campo apellidos está vacío");
+                sonValidos = false;
+            }
+            if ($("#edad").val() == null || $("#edad").val() == "") {
+                alert("El campo edad está vacío");
+                sonValidos = false;
+            }
+            if ($("#ciudad").val() == null || $("#ciudad").val() == "") {
+                alert("El campo ciudad está vacío");
+                sonValidos = false;
+            }
+
+            return sonValidos;
+        }
+
+    </script>
+</html>
